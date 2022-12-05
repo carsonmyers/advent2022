@@ -60,10 +60,10 @@ impl<T: AsRef<str>> Day1<T> {
 }
 
 impl<T: AsRef<str>> Challenge<T> for Day1<T> {
-    fn run(&self, part: ChallengePart) -> Result<i64> {
+    fn run(&self, part: ChallengePart) -> Result<String> {
         match part {
-            ChallengePart::First => self.run_first(),
-            ChallengePart::Second => self.run_second(),
+            ChallengePart::First => self.run_first().map(|res| res.to_string()),
+            ChallengePart::Second => self.run_second().map(|res| res.to_string()),
         }
     }
 }

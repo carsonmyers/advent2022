@@ -32,10 +32,10 @@ impl fmt::Display for ChallengePart {
 }
 
 pub trait Challenge<T: AsRef<str>> {
-    fn run(&self, part: ChallengePart) -> Result<i64>;
+    fn run(&self, part: ChallengePart) -> Result<String>;
 }
 
-pub async fn run_all_challenges(input_svc: &Input) -> Result<Vec<Vec<i64>>> {
+pub async fn run_all_challenges(input_svc: &Input) -> Result<Vec<Vec<String>>> {
     let results = stream::iter(1..=25)
         .map(|day| {
             run_challenge(
@@ -66,7 +66,7 @@ pub async fn run_challenge(
     day: usize,
     parts: Vec<ChallengePart>,
     input_svc: &Input,
-) -> Result<Vec<i64>> {
+) -> Result<Vec<String>> {
     let challenge = get_challenge(day, input_svc).await?;
 
     let result = parts
