@@ -2,6 +2,7 @@ mod day1;
 mod day2;
 mod day3;
 mod day4;
+mod day5;
 pub mod error;
 
 use std::fmt;
@@ -93,6 +94,7 @@ async fn get_challenge(day: usize, input_svc: &Input) -> Result<Box<dyn Challeng
         day @ 2 => challenge!(day, input_svc => day2::Day2),
         day @ 3 => challenge!(day, input_svc => day3::Day3),
         day @ 4 => challenge!(day, input_svc => day4::Day4),
+        day @ 5 => challenge!(day, input_svc => day5::Day5),
         day if day > 25 => Err(Error::invalid_day(day)),
         day => Err(Error::not_implemented(day)),
     }?;

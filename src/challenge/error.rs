@@ -2,7 +2,7 @@ use thiserror::Error;
 
 use crate::input;
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Default)]
 pub enum ErrorKind {
     #[error("invalid day `{0}`")]
     InvalidDay(usize),
@@ -12,9 +12,16 @@ pub enum ErrorKind {
     InputError(#[from] input::error::Error),
     #[error("error parsing int `{1}`: {0}")]
     ParseIntError(std::num::ParseIntError, String),
+    #[error("missing data in challenge: {0}")]
+    MissingDataError(String),
+    #[error("invalid command in challenge: {0}")]
+    InvalidCommandError(String),
+    #[error("unknown error")]
+    #[default]
+    UnknownError,
 }
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Default)]
 #[error("{source}")]
 pub struct Error {
     pub(crate) day: usize,
@@ -48,6 +55,20 @@ impl Error {
         Error {
             day,
             source: ErrorKind::ParseIntError(err, num),
+        }
+    }
+
+    pub(crate) fn missing_data_error(day: usize, data: &str) -> Self {
+        Error {
+            day,
+            source: ErrorKind::MissingDataError(data.to_owned()),
+        }
+    }
+
+    pub(crate) fn invalid_command_error(day: usize, command: &str) -> Self {
+        Error {
+            day,
+            source: ErrorKind::InvalidCommandError(command.to_owned()),
         }
     }
 }
