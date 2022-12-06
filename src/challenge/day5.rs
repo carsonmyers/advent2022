@@ -43,7 +43,7 @@ impl Move {
         for _ in 0..3 {
             r#move
                 .read_command(&mut words)
-                .map_err(|_| Error::invalid_command_error(5, line))?;
+                .map_err(|_| Error::InvalidCommandError(line.to_string()))?;
         }
 
         Ok(r#move)
@@ -87,9 +87,9 @@ impl<T: AsRef<str>> Day5<T> {
             .map(|name| {
                 let c = stacks
                     .get_mut(name)
-                    .ok_or_else(|| Error::missing_data_error(5, "crate stack"))?
+                    .ok_or_else(|| Error::missing_data("crate stack"))?
                     .pop_front()
-                    .ok_or_else(|| Error::missing_data_error(5, "stack is empty"))?
+                    .ok_or_else(|| Error::missing_data("stack is empty"))?
                     .0;
 
                 Ok::<char, Error>(c)
@@ -107,7 +107,7 @@ impl<T: AsRef<str>> Day5<T> {
         let mut stacks = HashMap::new();
         let names = crate_data
             .get(crate_data.len() - 1)
-            .ok_or(Error::missing_data_error(5, "crate stack names"))?
+            .ok_or(Error::missing_data("crate stack names"))?
             .split_whitespace()
             .map(|name| {
                 stacks.insert(String::from(name), VecDeque::new());
@@ -129,11 +129,11 @@ impl<T: AsRef<str>> Day5<T> {
 
                 let name = names
                     .get(idx)
-                    .ok_or(Error::missing_data_error(5, "name for stack"))?;
+                    .ok_or(Error::missing_data("name for stack"))?;
 
                 let queue = stacks
                     .get_mut(name)
-                    .ok_or(Error::missing_data_error(5, "deque for stack"))?;
+                    .ok_or(Error::missing_data("deque for stack"))?;
 
                 // take the crate out of the level vector, leaving None in its place, so no copy
                 // is created
@@ -162,18 +162,18 @@ impl<T: AsRef<str>> Day5<T> {
 
         let src = stacks
             .get_mut(&r#move.src)
-            .ok_or_else(|| Error::missing_data_error(5, "crate stack"))?;
+            .ok_or_else(|| Error::missing_data("crate stack"))?;
 
         for _ in 0..r#move.count {
             intermediate.push_front(
                 src.pop_front()
-                    .ok_or_else(|| Error::missing_data_error(5, "crate"))?,
+                    .ok_or_else(|| Error::missing_data("crate"))?,
             )
         }
 
         let dst = stacks
             .get_mut(&r#move.dst)
-            .ok_or_else(|| Error::missing_data_error(5, "crate stack"))?;
+            .ok_or_else(|| Error::missing_data("crate stack"))?;
 
         for _ in 0..r#move.count {
             // multi_move causes the crates to be moved as-is such that they end up in the same

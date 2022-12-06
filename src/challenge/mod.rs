@@ -3,6 +3,7 @@ mod day2;
 mod day3;
 mod day4;
 mod day5;
+mod day6;
 pub mod error;
 
 use std::fmt;
@@ -52,10 +53,7 @@ pub async fn run_all_challenges(input_svc: &Input) -> Result<Vec<Vec<String>>> {
         .into_iter()
         .filter_map(|res| match res {
             result @ Ok(_) => Some(result),
-            Err(Error {
-                source: ErrorKind::DayNotImplemented(_),
-                ..
-            }) => None,
+            Err(Error::DayNotImplemented(_)) => None,
             result @ Err(_) => Some(result),
         })
         .collect::<Result<Vec<_>>>()?;
@@ -80,10 +78,7 @@ pub async fn run_challenge(
 
 macro_rules! challenge {
     ($day:tt, $svc:expr => $mod:ident :: $struct:ident) => {{
-        let r#in = $svc
-            .get_input($day)
-            .await
-            .map_err(|err| Error::input_error($day, err))?;
+        let r#in = $svc.get_input($day).await?;
         Ok(Box::new($mod::$struct::new(r#in)) as Box<dyn Challenge<String>>)
     }};
 }
@@ -95,8 +90,9 @@ async fn get_challenge(day: usize, input_svc: &Input) -> Result<Box<dyn Challeng
         day @ 3 => challenge!(day, input_svc => day3::Day3),
         day @ 4 => challenge!(day, input_svc => day4::Day4),
         day @ 5 => challenge!(day, input_svc => day5::Day5),
-        day if day > 25 => Err(Error::invalid_day(day)),
-        day => Err(Error::not_implemented(day)),
+        day @ 6 => challenge!(day, input_svc => day6::Day6),
+        day if day > 25 => Err(Error::InvalidDay(day)),
+        day => Err(Error::DayNotImplemented(day)),
     }?;
 
     Ok(challenge)

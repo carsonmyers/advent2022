@@ -1,6 +1,5 @@
 use itertools::Itertools;
 
-use super::error::*;
 use super::{Challenge, ChallengePart, Result};
 
 pub struct Day1<T: AsRef<str>> {
@@ -34,10 +33,7 @@ impl<T: AsRef<str>> Day1<T> {
             .batching(|it| {
                 let nums = it
                     .take_while(|line| line.len() > 0)
-                    .map(|line| {
-                        line.parse::<i64>()
-                            .map_err(|err| Error::parse_int_error(1, err, line.to_string()))
-                    })
+                    .map(|line| line.parse::<i64>().map_err(|err| err.into()))
                     .collect::<Vec<_>>();
 
                 if nums.len() > 0 {
